@@ -1,0 +1,6 @@
+/* Vanilla CSS implementation */
+
+.list-group{
+    list-style: none;
+    padding: 0;
+}

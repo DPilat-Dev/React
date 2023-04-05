@@ -1,0 +1,8 @@
+/* Module CSS implementation */
+/* In the .tsx file for the import style add import styles from 'example.module.css'; */
+/* In the .tsx file the way that you call the style would be int the classname like this classname={styles[list-group]} or classname={styles.list} (- isnt a valid case use 1 orther wise use 2)  */
+
+.list-group{
+    list-style: none;
+    padding: 0;
+}
