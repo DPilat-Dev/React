@@ -8,6 +8,7 @@ import produce from "immer";
 import NavBar from "./components/NavBar";
 import Cart from "./components/Cart";
 import ExpandableText from "./components/ExpandableText";
+import Form from "./components/Form";
 
 function App() {
   const items = ["New York", "Los Angeles", "San Francisco"];
@@ -73,19 +74,7 @@ function App() {
 
   return (
     <div>
-      <ExpandableText maxChars={10}>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Magni
-        praesentium delectus recusandae earum expedita error ea veniam quo eius,
-        ut, vel amet, repellat sapiente? Voluptatibus animi eligendi ab ex.
-        Suscipit ipsa omnis quod enim, ipsam ratione quam libero? Ullam possimus
-        id asperiores aliquid nobis! Quas assumenda fugiat minima amet
-        exercitationem officiis dolores iure voluptas nulla consequatur
-        similique dicta architecto ipsam velit vel, ab modi obcaecati excepturi?
-        Reprehenderit, quis et porro maxime qui, distinctio ipsum harum fugiat
-        dolor eveniet rem dicta voluptatibus suscipit nemo aliquid tempore
-        pariatur praesentium exercitationem illum unde quam sit deserunt
-        nostrum! Soluta ab sed provident facilis quo?
-      </ExpandableText>
+      <Form />
     </div>
   );
 }
