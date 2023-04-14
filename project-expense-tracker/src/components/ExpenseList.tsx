@@ -1,34 +1,60 @@
 import React from "react";
 
-const ExpenseList = () => {
+interface Expense {
+  id: number;
+  description: string;
+  amount: number;
+  category: string;
+}
+
+interface Props {
+  expenseList: Expense[];
+  onDelete: (id: number) => void;
+}
+
+const ExpenseList = ({ expenseList, onDelete }: Props) => {
+  if (expenseList.length === 0) return null;
+
   return (
-    <table className="table">
+    <table className="table table-bordered">
       <thead>
         <tr>
-          <th scope="col">Description</th>
-          <th scope="col">Amount</th>
-          <th scope="col">Category</th>
-          <th scope="col"></th>
+          <th>Description</th>
+          <th>Amount</th>
+          <th>Category</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">Example</th>
-          <td>$5.00</td>
-          <td>Entertainment</td>
-          <td>
-            <button type="button" className="btn btn-danger">
-              Delete
-            </button>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">Total</th>
-          <td>$5.00</td>
-          <td></td>
-          <td></td>
-        </tr>
+        {expenseList.map((item) => (
+          <tr key={item.id}>
+            <td>{item.description}</td>
+            <td>{item.amount}</td>
+            <td>{item.category}</td>
+            <td>
+              <button
+                className="btn btn-outline-danger"
+                onClick={() => onDelete(item.id)}
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        ))}
       </tbody>
+      <tfoot>
+        <tr>
+          <td>Total</td>
+          <td>
+            $
+            {expenseList
+              .reduce((acc, expence) => expence.amount + acc, 0)
+              .toFixed(2)}
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tfoot>
     </table>
   );
 };
