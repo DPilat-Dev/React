@@ -18,6 +18,85 @@ internationalization, form validation, etc.
 
 Special thanks to [coding with mosh](https://codewithmosh.com/) for the great lessons.
 
+# Setting Up The Development Enviroment
+
+Now its time to setup the Develoment Enviroment so we can code in react.
+
+### Node.js
+
+For This Verson of the code yuo will need node version 16 or higher. [Node.js](https://nodejs.org/en/download)
+
+To Check what verson of node your running run: 
+
+```cmd
+node -v
+```
+
+### Vs Code
+
+Download the latest version of [VS Code](https://code.visualstudio.com/).
+
+Some good extentions to get would be **Prettier - Code format from Prettier** (go to settings -> Search for **format on save** -> check the Format On Save Check box),
+ 
+### Create a React Project
+
+To create a React Project I perfer to use vite the cra to create a react project do:
+
+```cmd
+npm create vite@4.1.0
+```
+Just follow the prompt and create a React project, but make sure to select the TypeScript variant since this README is written with TypeScript in mind.
+
+Then just follow the prompt
+
+```cmd
+npm install
+```
+this will add all the dependencies needed for react.
+
+Then Run this to start your site:
+
+```cmd
+npm run dev
+```
+### Optional addons
+
+If you want [**bootstrap**](https://getbootstrap.com/) in your project install
+
+```npm
+npm i bootstrap@5.2.3
+```
+If you want [**React Icons**](https://react-icons.github.io/react-icons)
+
+```npm
+npm i react-icons@4.7.1
+```
+
+If you want [**Styled Components**](https://styled-components.com/)
+
+```npm
+npm i styled-components
+npm i @types/styled-components
+```
+
+If you want [**immer**](https://immerjs.github.io/immer/)
+
+```npm
+npm i immer@9.0.19
+```
+
+If you want [**React Hook Forms**](https://react-hook-form.com/)
+```npm
+npm i react-hook-form@7.43
+```
+
+If you want [**Zod Validator**](https://github.com/colinhacks/zod)
+
+```npm
+npm i zod@3.20.6
+npm i @hookform/resolver@2.9.11
+```
+
 # Building Components
 In React apps, a componet can only return a single element. 
 
@@ -562,4 +641,153 @@ const Cart = ({ cartItems, onClear }: Props) => {
 };
 
 export default Cart;
+```
+
+# Building Forms
+
+To handle form submissions, we set the onSubmit attribute of the form element.
+
+```TSX
+const App = () => {
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    console.log('Submitted');
+  };
+  
+  return (
+    <form onSubmit={handleSubmit}></form>
+  );
+}
+```
+
+We can use the ref hook to access elements in the DOM. This technique is often used to read the value of input fields upon submitting a form.
+
+```TSX
+const App = () => {
+  const nameRef = useRef<HTMLInputElement>(null);
+
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    
+    if (nameRef.current)
+      console.log(nameRef.current.value);
+  };
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      <input ref={nameRef} type="text" />
+    </form>
+  );
+}
+```
+
+We can also use the state hook to create state variables and update them as the user types into input fields. With this technique, every time the user types a character into an input field, the component containing the form gets re-rendered. While in theory this can cause a performance penalty, in practice this is often negligible.
+
+```TSX
+const App = () => {
+  const [name, setName] = useState('');
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      <input value={name} type="text" onChange={(event) => setName(event.target.value)} />
+    </form>
+  );
+}
+```
+
+React Hook Form is a popular library that helps us build forms quickly with less code. With React Hook Form, we no longer have to worry about using the ref or state hooks to manage the form state.
+
+If you want [**React Hook Forms**](https://react-hook-form.com/)
+```npm
+npm i react-hook-form@7.43
+```
+
+```TSX
+import { FieldValues, useForm } from 'react-hook-form';
+
+const App = () => {
+  const { register, handleSubmit } = useForm();
+
+  const onSubmit = (data: FieldValues) => {
+    console.log('Submitting the form', data);
+  }
+  
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input {...register('name')} type="text" />
+    </form>
+  );
+}
+```
+React Hook Form supports the standard HTML attributes for data validation such as required, minLength, etc. 
+
+```TSX
+import { FieldValues, useForm } from 'react-hook-form';
+
+const App = () => {
+  const { register, handleSubmit, formState: {errors} } = useForm<FormData>();
+
+  const onSubmit = (data: FieldValues) => {
+    console.log('Submitting the form', data);
+  }
+  
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input {...register('name', { required: true})} type="text" />
+      {errors.name?.type === 'required' && <p>Name is required.</p>}
+    </form>
+  );
+}
+```
+
+We can validate our forms using schema-based validation libraries such as joi, yup, zod, etc. With these libraries, we can define all our validation rules in a single place called a schema.
+
+If you want [**Zod Validator**](https://github.com/colinhacks/zod)
+
+```npm
+npm i zod@3.20.6
+npm i @hookform/resolver@2.9.11
+```
+
+```TSX
+import { FieldValues, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookfrom/resolvers/zod';
+
+const schema = z.object({
+  name: z.string().min(3),
+});
+
+type FormData = z.infer<typeof schema>;
+
+const App = () => {
+  const { register, handleSubmit, formState: {errors} } = useForm<FormData>({ resolver: zodResolver(schema) });
+
+  const onSubmit = (data: FieldValues) => {
+    console.log('Submitting the form', data);
+  }
+  
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input {...register('name', { required: true})} type="text" />
+      {errors.name?.type === 'required' && <p>Name is required.</p>}
+    </form>
+  );
+}
+```
+
+Disabling the submit button
+
+```TSX
+const App = () => {
+  const {
+    formState: { inValid },
+  } = useForm<FormData>();
+  
+  return(
+    <form>
+      <button disabled={!isValid}>Submit</button>
+    </form>
+  );
+}
 ```
