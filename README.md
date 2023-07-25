@@ -791,3 +791,71 @@ const App = () => {
   );
 }
 ```
+
+# Connecting to The Backend
+
+React is a library for building front-end user interfaces, but to create complete apps, we also need a back-end server to handle business logic, data storage, and other functionality. The communication between the front-end and the back-end happens over HTTP, the same protocol that powers the web. The front-end sends an HTTP request to the back-end, and the back-end sends an HTTP response back. Each HTTP request and response contains a header and a body. The header provides metadata about the message, such as the content type and HTTP status code, while the body contains the actual data being sent or received. To send HTTP requests to the backend, we can use axios, a popular JavaScript library. axios makes it easy to send requests. When we send HTTP requests with the effect hook, we should provide a clean-up function to cancel the request if the component is unmounted before the response is received. This is important to prevent errors, especially if the user navigates to a different page while the request is still pending. We use the effect hook to perform side effects, such as fetching data or updating the DOM. The effect hook takes a function that performs the side effect and an optional array of dependencies. Whenever the dependencies change, the effect hook runs again. To clean up any resources that were created by the effect hook, we can include a clean-up function that runs when the component unmounts or the dependencies change. When sending HTTP requests, we must handle errors properly. This can be done using try-catch blocks or by handling the error in the promise chain using .catch(). Custom hooks are a way to reuse code logic between multiple components. By encapsulating logic in a custom hook, we can create reusable pieces of code that can be shared across components without duplicating the code. Custom hooks can be used to handle common tasks, such as fetching data, and can help to make our code more organized and easier to maintain.
+
+Using the Effect Hook
+```TSX
+function App() {
+  useEffect(() {
+   document.title = 'App';
+ }, []);
+}
+```
+
+Insalling Axios fro HTTP requests to the back-end
+```
+npm i Axios@1.3.4
+```
+
+Fetching Data With AXIOS
+```TSX
+const [users, setUsers] = useState<User[]>([]);
+
+useEffect(() => {
+ axios.get<User[]>('http://...').then((res) => setUsers(res.data));
+}, []);
+```
+
+Handling Errors
+```TSX
+const [error, setError] = useState('');
+
+useEffect(() => {
+ axios.get<User[]>('http://...')
+      .then((res) => setUsers(res.data))
+      .catch(err => setError(err.message));
+}, []);
+```
+
+Cancelling an HTTP Request
+```TSX
+useEffect(() => {
+const controller = new AbortController();
+ axios.get<User[]>('http://...')
+      .then((res) => setUsers(res.data))
+      .catch(err => {
+          if(err instanceof CanceledError) return;
+          setError(err.message);
+      });
+
+  return () => controller.abort();
+}, []);
+```
+
+Deleting Data
+```TSX
+axios.delete('http://...')
+```
+
+Creating Data
+```TSX
+axios.post('http://...', newUser)
+```
+
+Updating Data (tip depending on the type of update you are doing it could be a patch or a put)
+```TSX
+axios.put('http://...', updatedUser)
+```
