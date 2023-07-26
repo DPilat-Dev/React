@@ -12,6 +12,7 @@ import apiClient, { CanceledError } from "../services/api-client";
         name: string;
         background_image: string;
         parent_platforms: {platform: Platform}[];
+        metacritic: number;
     }
   
     interface FetchGamesResponse {
